@@ -1,4 +1,5 @@
 import requests
+import json
 import os
 from dotenv import load_dotenv, find_dotenv
 from pathlib import Path
@@ -30,16 +31,27 @@ def getWeather(location):
     response = requests.get(url)
     
     print('============')
-    print(response)
+    #print(response)
 
-    for i in response:
-        print(i)
+    weatherData = response.json()
 
-    print('============')
-    f.write(response)
+    #json.dump(weatherData,f)
+
+
+    print("In", weatherData['location']['name'])
+    print("Temperature is currently " + str(weatherData['current']['temp_f']) + "°F")
+    print("Wind is blowing", weatherData['current']['wind_mph'],"mph", weatherData['current']['wind_dir'])
+    print("It is", weatherData['current']['condition']['text'])
     
 
-print(getWeather("london"))
+    print('============')
+    
+
+
+
+
+
+print(getWeather("New York"))
 
 
 f.close()
