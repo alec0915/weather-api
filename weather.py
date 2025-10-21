@@ -23,26 +23,30 @@ KEY = os.getenv("KEY")
 # IP Lookup	/ip.json or /ip.xml
 
 def getWeather(location):
-    url = "http://api.weatherapi.com/v1/current.json?key="+str(KEY)+"&q="+location
+    #url = "http://api.weatherapi.com/v1/current.json?key="+str(KEY)+"&q="+location
+    url = "http://api.weatherapi.com/v1/forecast.json?key="+str(KEY)+"&q="+location
+    
+    
+    
     #print(url)
     response = requests.get(url)
-    
-    print('============')
-    #print(response)
-
     weatherData = response.json()
 
     #f = open("weather.json",'w')
     #json.dump(weatherData,f)
     #f.close()
 
+    f = open("forecast.json",'w')
+    json.dump(weatherData,f)
+    f.close()
+
+    print('============')
 
     print("In", weatherData['location']['name'])
     print("Temperature is currently " + str(weatherData['current']['temp_f']) + "°F")
     print("Wind is blowing", weatherData['current']['wind_mph'],"mph", weatherData['current']['wind_dir'])
     print("It is", weatherData['current']['condition']['text'])
     
-
     print('============')
     
 
