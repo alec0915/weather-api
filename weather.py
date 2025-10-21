@@ -1,15 +1,12 @@
 import requests
 import json
 import os
-from dotenv import load_dotenv, find_dotenv
-from pathlib import Path
-load_dotenv(Path("D:/repos/weather-api/.env"))
+import io
+from dotenv import load_dotenv
+load_dotenv()
 print(os.getenv("KEY"))
-
-f = open("weather.json",'w')
-
-
-key = os.getenv("KEY")
+print(os.getenv("DIR"))
+KEY = os.getenv("KEY")
 # Base URL: http://api.weatherapi.com/v1
 
 # API	API Method
@@ -26,8 +23,8 @@ key = os.getenv("KEY")
 # IP Lookup	/ip.json or /ip.xml
 
 def getWeather(location):
-    url = "http://api.weatherapi.com/v1/current.json?key="+str(key)+"&q="+location
-    print(url)
+    url = "http://api.weatherapi.com/v1/current.json?key="+str(KEY)+"&q="+location
+    #print(url)
     response = requests.get(url)
     
     print('============')
@@ -35,7 +32,9 @@ def getWeather(location):
 
     weatherData = response.json()
 
+    #f = open("weather.json",'w')
     #json.dump(weatherData,f)
+    #f.close()
 
 
     print("In", weatherData['location']['name'])
@@ -51,7 +50,12 @@ def getWeather(location):
 
 
 
-print(getWeather("New York"))
+location = input("Where would you like to know the weather? (type 'exit' to quit):")
 
+while(location != "exit"):
 
-f.close()
+    try:
+        getWeather(location)
+    except KeyError:
+        print("Sorry, I couldn't find the weather for that location. Please try again.")
+    location = input("Where would you like to know the weather? (type 'exit' to quit):")
