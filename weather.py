@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 load_dotenv()
 print(os.getenv("KEY"))
 print(os.getenv("DIR"))
-key = os.getenv("KEY")
+KEY = os.getenv("KEY")
 # Base URL: http://api.weatherapi.com/v1
 
 # API	API Method
@@ -23,7 +23,7 @@ key = os.getenv("KEY")
 # IP Lookup	/ip.json or /ip.xml
 
 def getWeather(location):
-    url = "http://api.weatherapi.com/v1/current.json?key="+str(key)+"&q="+location
+    url = "http://api.weatherapi.com/v1/current.json?key="+str(KEY)+"&q="+location
     #print(url)
     response = requests.get(url)
     
@@ -50,12 +50,12 @@ def getWeather(location):
 
 
 
-#location = input("Where would you like to know the weather? (type 'exit' to quit):")
+location = input("Where would you like to know the weather? (type 'exit' to quit):")
 
-#while(location != "exit"):
+while(location != "exit"):
 
-#    try:
-#        getWeather(location)
-#    except KeyError:
-#        print("Sorry, I couldn't find the weather for that location. Please try again.")
-#    location = input("Where would you like to know the weather? (type 'exit' to quit):")
+    try:
+        getWeather(location)
+    except KeyError:
+        print("Sorry, I couldn't find the weather for that location. Please try again.")
+    location = input("Where would you like to know the weather? (type 'exit' to quit):")
