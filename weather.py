@@ -36,18 +36,43 @@ def getWeather(location):
     #json.dump(weatherData,f)
     #f.close()
 
-    f = open("forecast.json",'w')
-    json.dump(weatherData,f)
-    f.close()
+    #f = open("forecast.json",'w')
+    #json.dump(weatherData,f)
+    #f.close()
 
     print('============')
 
-    print("In", weatherData['location']['name'])
+    print("In", weatherData['location']['name'] + ', ' + weatherData['location']['region'] + ', ' + weatherData['location']['country'])
     print("Temperature is currently " + str(weatherData['current']['temp_f']) + "°F")
     print("Wind is blowing", weatherData['current']['wind_mph'],"mph", weatherData['current']['wind_dir'])
     print("It is", weatherData['current']['condition']['text'])
-    
+    print("Humidity:", weatherData['current']['humidity'])
+    print("Precipitation:", weatherData['current']['precip_in'],'in')
+    print("UV Index:", weatherData['current']['uv'])
     print('============')
+
+
+
+
+
+
+
+
+
+
+    pass
+
+
+
+
+
+
+
+
+
+
+
+
     
 
 
