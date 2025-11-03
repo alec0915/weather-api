@@ -16,6 +16,10 @@ KEY = os.getenv("KEY")
 # History	/history.json or /history.xml
 # Astronomy	/astronomy.json or /astronomy.xml
 
+
+
+
+
 def getWeather(location):
     #url = "http://api.weatherapi.com/v1/current.json?key="+str(KEY)+"&q="+location
     url = "http://api.weatherapi.com/v1/forecast.json?key="+str(KEY)+"&q="+location+"&days=3&aqi=yes&alerts=no"
@@ -90,3 +94,19 @@ try:
 except KeyError:
     print("Sorry, I couldn't find the weather for that location. Please try again.")
 #location = input("Where would you like to know the weather? (type 'q' to quit):")
+
+
+
+app = Flask(__name__)
+
+@app.route('/')
+def index():
+    return "Hello, World!"
+
+@app.route('/supersimpleweather')
+def supersimpleweather():
+    return '<h1>Supersimple Weather</h1><p>Get the weather for your location!</p>'
+
+
+if __name__ == '__main__':
+    app.run()
