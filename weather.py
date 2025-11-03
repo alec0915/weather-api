@@ -24,7 +24,7 @@ KEY = os.getenv("KEY")
 
 def getWeather(location):
     #url = "http://api.weatherapi.com/v1/current.json?key="+str(KEY)+"&q="+location
-    url = "http://api.weatherapi.com/v1/forecast.json?key="+str(KEY)+"&q="+location
+    url = "http://api.weatherapi.com/v1/forecast.json?key="+str(KEY)+"&q="+location+"&days=3&aqi=yes&alerts=no"
     
     
     
@@ -36,9 +36,9 @@ def getWeather(location):
     #json.dump(weatherData,f)
     #f.close()
 
-    #f = open("forecast.json",'w')
-    #json.dump(weatherData,f)
-    #f.close()
+    f = open("forecast.json",'w')
+    json.dump(weatherData,f)
+    f.close()
 
     print('============')
 
@@ -61,19 +61,6 @@ def getWeather(location):
 
 
     pass
-
-
-
-
-
-
-
-
-
-
-
-
-    
 
 
 
