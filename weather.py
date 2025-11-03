@@ -82,7 +82,7 @@ def getWeather(location):
 
 #location = input("Where would you like to know the weather? (type 'q' to quit):")
 
-location = "Midway City"
+location = "Los Angeles"
 
 #while(location != "q"):
 try:
