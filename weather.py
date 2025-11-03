@@ -3,7 +3,12 @@ import json
 import os
 import io
 from dotenv import load_dotenv
-from flask import Flask
+from flask import Flask, jsonify,request
+from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import Column, Integer, String, Float
+
+
+
 load_dotenv()
 print(os.getenv("KEY"))
 print(os.getenv("DIR"))
@@ -98,6 +103,10 @@ except KeyError:
 
 
 app = Flask(__name__)
+basedir = os.path.abspath(os.path.dirname(__file__))
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'weather.db')
+
+db = SQLAlchemy(app)
 
 @app.route('/')
 def index():
@@ -106,6 +115,11 @@ def index():
 @app.route('/supersimpleweather')
 def supersimpleweather():
     return '<h1>Supersimple Weather</h1><p>Get the weather for your location!</p>'
+
+
+
+
+# database models
 
 
 if __name__ == '__main__':
