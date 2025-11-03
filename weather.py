@@ -3,6 +3,7 @@ import json
 import os
 import io
 from dotenv import load_dotenv
+from flask import Flask
 load_dotenv()
 print(os.getenv("KEY"))
 print(os.getenv("DIR"))
@@ -12,15 +13,8 @@ KEY = os.getenv("KEY")
 # API	API Method
 # Current weather	/current.json or /current.xml
 # Forecast	/forecast.json or /forecast.xml
-# Search or Autocomplete	/search.json or /search.xml
 # History	/history.json or /history.xml
-# Alerts	/alerts.json or /alerts.xml
-# Marine	/marine.json or /marine.xml
-# Future	/future.json or /future.xml
-# Time Zone	/timezone.json or /timezone.xml
-# Sports	/sports.json or /sports.xml
 # Astronomy	/astronomy.json or /astronomy.xml
-# IP Lookup	/ip.json or /ip.xml
 
 def getWeather(location):
     #url = "http://api.weatherapi.com/v1/current.json?key="+str(KEY)+"&q="+location
@@ -36,9 +30,9 @@ def getWeather(location):
     #json.dump(weatherData,f)
     #f.close()
 
-    f = open("forecast.json",'w')
-    json.dump(weatherData,f)
-    f.close()
+    #f = open("forecast.json",'w')
+    #json.dump(weatherData,f)
+    #f.close()
 
     print('============')
 
@@ -49,14 +43,34 @@ def getWeather(location):
     print("Humidity:", weatherData['current']['humidity'])
     print("Precipitation:", weatherData['current']['precip_in'],'in')
     print("UV Index:", weatherData['current']['uv'])
+    print('\n')
+
+
+
+
+    for day in weatherData['forecast']['forecastday']:
+        print(day['date'])
+        print("Max Temp:", day['day']['maxtemp_f'])
+        print("Min Temp:", day['day']['mintemp_f'])
+        print("Condition:", day['day']['condition']['text'])
+        print("Humidity:", day['day']['avghumidity'])
+        print("Precipitation:", day['day']['totalprecip_in'],'in')
+        print("UV Index:", day['day']['uv'])
+        print(day['astro']['sunrise'], 'to', day['astro']['sunset'])
+        print(day['astro']['moonrise'], 'to', day['astro']['moonset'])
+        print(day['astro']['moon_phase'])
+        print('\n')
+        for hour in day['hour']:
+            print(hour['time'], '-', str(hour['temp_f'])+ '°F -', str(hour['condition']['text']))
+            print('Humidity:', str(hour['humidity'])+ '% ')
+            print('Precipitation:', str(hour['precip_in']) + 'in')
+            print('Wind:', str(hour['wind_mph'])+ 'mph', hour['wind_dir'])
+            print('UV Index:', hour['uv'])
+            print('\n')
+
+
+
     print('============')
-
-
-
-
-
-
-
 
 
 
@@ -66,12 +80,13 @@ def getWeather(location):
 
 
 
-location = input("Where would you like to know the weather? (type 'exit' to quit):")
+#location = input("Where would you like to know the weather? (type 'q' to quit):")
 
-while(location != "exit"):
+location = "Midway City"
 
-    try:
-        getWeather(location)
-    except KeyError:
-        print("Sorry, I couldn't find the weather for that location. Please try again.")
-    location = input("Where would you like to know the weather? (type 'exit' to quit):")
+#while(location != "q"):
+try:
+    getWeather(location)
+except KeyError:
+    print("Sorry, I couldn't find the weather for that location. Please try again.")
+#location = input("Where would you like to know the weather? (type 'q' to quit):")
