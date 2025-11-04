@@ -119,11 +119,14 @@ def index():
             flash("Please enter a location")
             return render_template('index.html')
         print(f"Received location: {location}")
+        return redirect(f'/weather/{location}')
     return render_template('index.html')
 #https://www.youtube.com/watch?v=hHkl7bKZOCI
 
-# database models
 
+@app.route('/weather/<location>')
+def weather(location):
+    return render_template('weather.html', location=escape(location))
 
 if __name__ == '__main__':
     app.run(debug=True)
