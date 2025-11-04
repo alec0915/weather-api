@@ -3,21 +3,81 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Weather Forecast for : {{ place }}</title>
+    <title>Weather Forecast for: {{ place }}</title>
 </head>
 <body>
-    <h1>{{ place }}</h1>
-    <h2>Local Time: {{ localtime }}</h2>
-
+    <h1>3-Day Forecast for {{ place }}</h1>
     <!-- Weather data will be displayed here -->
-    <img src="{{ image_url }}" alt="Weather Icon">
-    <p>Temperature: {{ temp }} °F</p>
-    <p>Condition: {{ condition }} </p>
-    <p>Wind: {{ wind }}</p>
-    <p>Humidity: {{ humidity }}%</p>
-    <p>Precipitation: {{ precip }} in</p>
-    <p>UV Index: {{ uv }}</p>
-    
+
+    <table>
+        <tr>
+            <th>Day 1</th>
+            <th>Day 2</th>
+            <th>Day 3</th>
+        </tr>
+        <tr>
+            <td><img src="{{ image_url_Day_1 }}" alt="Weather Icon Day 1"></td>
+            <td><img src="{{ image_url_Day_2 }}" alt="Weather Icon Day 2"></td>
+            <td><img src="{{ image_url_Day_3 }}" alt="Weather Icon Day 3"></td>
+        </tr>
+        <tr>
+            <td>High: {{ max_temp_Day_1 }}°F / Low: {{ min_temp_Day_1 }}°F</td>
+            <td>High: {{ max_temp_Day_2 }}°F / Low: {{ min_temp_Day_2 }}°F</td>
+            <td>High: {{ max_temp_Day_3 }}°F / Low: {{ min_temp_Day_3 }}°F</td>
+        </tr>
+        <tr>
+            <td>Condition: {{ condition_Day_1 }}</td>
+            <td>Condition: {{ condition_Day_2 }}</td>
+            <td>Condition: {{ condition_Day_3 }}</td>
+        </tr>
+        <tr>
+            <td>Humidity: {{ humidity_Day_1 }}%</td>
+            <td>Humidity: {{ humidity_Day_2 }}%</td>
+            <td>Humidity: {{ humidity_Day_3 }}%</td>
+        </tr>
+        <tr>
+            <td>Precipitation: {{ precip_Day_1 }} in</td>
+            <td>Precipitation: {{ precip_Day_2 }} in</td>   
+            <td>Precipitation: {{ precip_Day_3 }} in</td>
+        </tr>
+        <tr>
+            <td>Chance of Rain: {{ will_It_Rain_Day_1 }}%</td>
+            <td>Chance of Rain: {{ will_It_Rain_Day_2 }}%</td>
+            <td>Chance of Rain: {{ will_It_Rain_Day_3 }}%</td>
+        </tr>
+        <tr>
+            <td>UV Index: {{ uv_Day_1 }}</td>
+            <td>UV Index: {{ uv_Day_2 }}</td>
+            <td>UV Index: {{ uv_Day_3 }}</td>
+        </tr>
+        <tr>
+            <td>Sunrise: {{ sunrise_Day_1 }}</td>
+            <td>Sunrise: {{ sunrise_Day_2 }}</td>
+            <td>Sunrise: {{ sunrise_Day_3 }}</td>
+        </tr>
+        <tr>   
+            <td>Sunset: {{ sunset_Day_1 }}</td>
+            <td>Sunset: {{ sunset_Day_2 }}</td>
+            <td>Sunset: {{ sunset_Day_3 }}</td>
+        </tr>
+        <tr>
+            <td>Moonrise: {{ moonrise_Day_1 }}</td>
+            <td>Moonrise: {{ moonrise_Day_2 }}</td>
+            <td>Moonrise: {{ moonrise_Day_3 }}</td>
+        </tr>
+        <tr>
+            <td>Moonset: {{ moonset_Day_1 }}</td>
+            <td>Moonset: {{ moonset_Day_2 }}</td>   
+            <td>Moonset: {{ moonset_Day_3 }}</td>
+        </tr>
+        <tr>
+            <td>Phase: {{ moon_phase_Day_1 }}</td>
+            <td>Phase: {{ moon_phase_Day_2 }}</td>
+            <td>Phase: {{ moon_phase_Day_3 }}</td>
+        </tr>
+    </table>
 
 </body>
 </html>
+
+
