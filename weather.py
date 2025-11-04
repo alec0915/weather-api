@@ -30,10 +30,9 @@ def getWeather(location):
     url = "http://api.weatherapi.com/v1/forecast.json?key="+str(KEY)+"&q="+location+"&days=3&aqi=yes&alerts=no"
     
     
-    
     #print(url)
-    #response = requests.get(url)
-    #weatherData = response.json()
+    response = requests.get(url)
+    weatherData = response.json()
 
     #f = open("weather.json",'w')
     #json.dump(weatherData,f)
@@ -43,18 +42,26 @@ def getWeather(location):
     #json.dump(weatherData,f)
     #f.close()
 
-    #print('============')
+    print('============')
 
-#    print("In", weatherData['location']['name'] + ', ' + weatherData['location']['region'] + ', ' + weatherData['location']['country'])
-#    print("Temperature is currently " + str(weatherData['current']['temp_f']) + "°F")
-#    print("Wind is blowing", weatherData['current']['wind_mph'],"mph", weatherData['current']['wind_dir'])
-##    print("It is", weatherData['current']['condition']['text'])
-#    print("Humidity:", weatherData['current']['humidity'])
-#    print("Precipitation:", weatherData['current']['precip_in'],'in')
-#    print("UV Index:", weatherData['current']['uv'])
-#    print('\n')
+    print("In", weatherData['location']['name'] + ', ' + weatherData['location']['region'] + ', ' + weatherData['location']['country'])
+    print("Temperature is currently " + str(weatherData['current']['temp_f']) + "°F")
+    print("Wind is blowing", weatherData['current']['wind_mph'],"mph", weatherData['current']['wind_dir'])
+    print("It is", weatherData['current']['condition']['text'])
+    print("Humidity:", weatherData['current']['humidity'])
+    print("Precipitation:", weatherData['current']['precip_in'],'in')
+    print("UV Index:", weatherData['current']['uv'])
+    print('\n')
 
-
+    place = weatherData['location']['name'] + ', ' + weatherData['location']['region'] + ', ' + weatherData['location']['country']
+    temp = weatherData['current']['temp_f']
+    condition = weatherData['current']['condition']['text']
+    wind = f"{weatherData['current']['wind_mph']} mph {weatherData['current']['wind_dir']}"
+    humidity = weatherData['current']['humidity']
+    precip = weatherData['current']['precip_in']
+    uv = weatherData['current']['uv']
+    image_url = "http:" + weatherData['current']['condition']['icon']
+    localtime = weatherData['location']['localtime']
 
 
 #    for day in weatherData['forecast']['forecastday']:
@@ -79,11 +86,11 @@ def getWeather(location):
 
 
 
-#    print('============')
+    print('============')
 
 
-
-    pass
+    return place, temp, condition, wind, humidity, precip, uv, image_url, localtime
+    #pass
 
 
 
@@ -126,7 +133,9 @@ def index():
 
 @app.route('/weather/<location>')
 def weather(location):
-    return render_template('weather.html', location=escape(location))
+    place, temp, condition, wind, humidity, precip, uv, image_url, localtime =getWeather(location)
+
+    return render_template('weather.html', location=escape(location), place=place, temp=temp, condition=condition, wind=wind, humidity=humidity, precip=precip, uv=uv, image_url=image_url, localtime=localtime)
 
 if __name__ == '__main__':
     app.run(debug=True)

@@ -3,11 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Weather Information</title>
+    <title>Weather Information for : {{ place }}</title>
 </head>
 <body>
-    <h1>Weather Information</h1>
-    <p>Showing weather data for location: {{ location }}</p>
+    <h1>{{ place }}</h1>
+    <h2>Local Time: {{ localtime }}</h2>
+
     <!-- Weather data will be displayed here -->
+    <img src="{{ image_url }}" alt="Weather Icon">
+    <p>Temperature: {{ temp }} °F</p>
+    <p>Condition: {{ condition }} </p>
+    <p>Wind: {{ wind }}</p>
+    <p>Humidity: {{ humidity }}%</p>
+    <p>Precipitation: {{ precip }} in</p>
+    <p>UV Index: {{ uv }}</p>
+    
+
 </body>
 </html>
