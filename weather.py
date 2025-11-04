@@ -42,21 +42,21 @@ def getWeather(location):
 
     try:
 
-        print('============')
+        #print('============')
 
-        print("In", weatherData['location']['name'] + ', ' + weatherData['location']['region'] + ', ' + weatherData['location']['country'])
-        print("Temperature is currently " + str(weatherData['current']['temp_f']) + "°F")
-        print("Wind is blowing", weatherData['current']['wind_mph'],"mph", weatherData['current']['wind_dir'])
-        print("It is", weatherData['current']['condition']['text'])
-        print("Humidity:", weatherData['current']['humidity'])
-        print("Precipitation:", weatherData['current']['precip_in'],'in')
-        print("UV Index:", weatherData['current']['uv'])
-        print('\n')
+#        print("In", weatherData['location']['name'] + ', ' + weatherData['location']['region'] + ', ' + weatherData['location']['country'])
+#        print("Temperature is currently " + str(weatherData['current']['temp_f']) + "°F")
+#        print("Wind is blowing", weatherData['current']['wind_mph'],"mph", weatherData['current']['wind_dir'])
+#        print("It is", weatherData['current']['condition']['text'])
+#        print("Humidity:", weatherData['current']['humidity'])
+#        print("Precipitation:", weatherData['current']['precip_in'],'in')
+#        print("UV Index:", weatherData['current']['uv'])
+#        print('\n')
 
         place = weatherData['location']['name'] + ', ' + weatherData['location']['region'] + ', ' + weatherData['location']['country']
         temp = weatherData['current']['temp_f']
         condition = weatherData['current']['condition']['text']
-        wind = f"{weatherData['current']['wind_mph']} mph {weatherData['current']['wind_dir']}"
+        wind = str(weatherData['current']['wind_mph']) + " mph " + weatherData['current']['wind_dir']
         humidity = weatherData['current']['humidity']
         precip = weatherData['current']['precip_in']
         uv = weatherData['current']['uv']
@@ -86,7 +86,7 @@ def getWeather(location):
 
 
         package1 = (place, temp, condition, wind, humidity, precip, uv, image_url, localtime)
-        print('============')
+#        print('============')
     except KeyError:
         print("Location not recognized")
         package1 = (-1,-1,-1,-1,-1,-1,-1,-1,-1)
@@ -124,6 +124,12 @@ def index():
             flash("Please enter a location")
             return render_template('index.html')
         print('Received location: '+location)
+        forecast = request.form.get('forecast')
+        print('Forecast value: '+str(forecast))
+        print('Current value: '+str(request.form.get('Current')))
+        if forecast:
+            print("Forecast button clicked")
+            return redirect('/forecast/'+location)
         return redirect('/weather/'+location)
     return render_template('index.html')
 #https://www.youtube.com/watch?v=hHkl7bKZOCI
@@ -137,6 +143,22 @@ def weather(location):
         return redirect('/')
     place, temp, condition, wind, humidity, precip, uv, image_url, localtime = weatherdata
     return render_template('weather.html', location=escape(location), place=place, temp=temp, condition=condition, wind=wind, humidity=humidity, precip=precip, uv=uv, image_url=image_url, localtime=localtime)
+
+
+@app.route('/forecast/<location>')
+def forecast(location):
+    weatherdata=getWeather(location)
+    if weatherdata[0] == -1:
+        flash("Location not recognized. Please try again.")
+        return redirect('/')
+    place, temp, condition, wind, humidity, precip, uv, image_url, localtime = weatherdata
+    return render_template('forecast.html', location=escape(location), place=place, temp=temp, condition=condition, wind=wind, humidity=humidity, precip=precip, uv=uv, image_url=image_url, localtime=localtime)
+
+
+# add button to go back to index.html
+# add button for 3 day forecast 
+# add new page for 3 day forecast
+
 
 if __name__ == '__main__':
     app.run(debug=True)
