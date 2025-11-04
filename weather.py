@@ -4,8 +4,6 @@ import os
 import io
 from dotenv import load_dotenv
 from flask import Flask, jsonify,request, render_template, flash,redirect
-from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import Column, Integer, String, Float
 from markupsafe import escape
 
 
@@ -42,54 +40,60 @@ def getWeather(location):
     #json.dump(weatherData,f)
     #f.close()
 
-    print('============')
+    try:
 
-    print("In", weatherData['location']['name'] + ', ' + weatherData['location']['region'] + ', ' + weatherData['location']['country'])
-    print("Temperature is currently " + str(weatherData['current']['temp_f']) + "°F")
-    print("Wind is blowing", weatherData['current']['wind_mph'],"mph", weatherData['current']['wind_dir'])
-    print("It is", weatherData['current']['condition']['text'])
-    print("Humidity:", weatherData['current']['humidity'])
-    print("Precipitation:", weatherData['current']['precip_in'],'in')
-    print("UV Index:", weatherData['current']['uv'])
-    print('\n')
+        print('============')
 
-    place = weatherData['location']['name'] + ', ' + weatherData['location']['region'] + ', ' + weatherData['location']['country']
-    temp = weatherData['current']['temp_f']
-    condition = weatherData['current']['condition']['text']
-    wind = f"{weatherData['current']['wind_mph']} mph {weatherData['current']['wind_dir']}"
-    humidity = weatherData['current']['humidity']
-    precip = weatherData['current']['precip_in']
-    uv = weatherData['current']['uv']
-    image_url = "http:" + weatherData['current']['condition']['icon']
-    localtime = weatherData['location']['localtime']
+        print("In", weatherData['location']['name'] + ', ' + weatherData['location']['region'] + ', ' + weatherData['location']['country'])
+        print("Temperature is currently " + str(weatherData['current']['temp_f']) + "°F")
+        print("Wind is blowing", weatherData['current']['wind_mph'],"mph", weatherData['current']['wind_dir'])
+        print("It is", weatherData['current']['condition']['text'])
+        print("Humidity:", weatherData['current']['humidity'])
+        print("Precipitation:", weatherData['current']['precip_in'],'in')
+        print("UV Index:", weatherData['current']['uv'])
+        print('\n')
 
-
-#    for day in weatherData['forecast']['forecastday']:
-#        print(day['date'])
-#        print("Max Temp:", day['day']['maxtemp_f'])
-#        print("Min Temp:", day['day']['mintemp_f'])
-#        print("Condition:", day['day']['condition']['text'])
-#        print("Humidity:", day['day']['avghumidity'])
-#        print("Precipitation:", day['day']['totalprecip_in'],'in')
-#        print("UV Index:", day['day']['uv'])
-#        print(day['astro']['sunrise'], 'to', day['astro']['sunset'])
-#        print(day['astro']['moonrise'], 'to', day['astro']['moonset'])
-#        print(day['astro']['moon_phase'])
-#        print('\n')
-#        for hour in day['hour']:
-#            print(hour['time'], '-', str(hour['temp_f'])+ '°F -', str(hour['condition']['text']))
-#            print('Humidity:', str(hour['humidity'])+ '% ')
-#            print('Precipitation:', str(hour['precip_in']) + 'in')
-#            print('Wind:', str(hour['wind_mph'])+ 'mph', hour['wind_dir'])
-#            print('UV Index:', hour['uv'])
-#            print('\n')
+        place = weatherData['location']['name'] + ', ' + weatherData['location']['region'] + ', ' + weatherData['location']['country']
+        temp = weatherData['current']['temp_f']
+        condition = weatherData['current']['condition']['text']
+        wind = f"{weatherData['current']['wind_mph']} mph {weatherData['current']['wind_dir']}"
+        humidity = weatherData['current']['humidity']
+        precip = weatherData['current']['precip_in']
+        uv = weatherData['current']['uv']
+        image_url = "http:" + weatherData['current']['condition']['icon']
+        localtime = weatherData['location']['localtime']
 
 
+    #    for day in weatherData['forecast']['forecastday']:
+    #        print(day['date'])
+    #        print("Max Temp:", day['day']['maxtemp_f'])
+    #        print("Min Temp:", day['day']['mintemp_f'])
+    #        print("Condition:", day['day']['condition']['text'])
+    #        print("Humidity:", day['day']['avghumidity'])
+    #        print("Precipitation:", day['day']['totalprecip_in'],'in')
+    #        print("UV Index:", day['day']['uv'])
+    #        print(day['astro']['sunrise'], 'to', day['astro']['sunset'])
+    #        print(day['astro']['moonrise'], 'to', day['astro']['moonset'])
+    #        print(day['astro']['moon_phase'])
+    #        print('\n')
+    #        for hour in day['hour']:
+    #            print(hour['time'], '-', str(hour['temp_f'])+ '°F -', str(hour['condition']['text']))
+    #            print('Humidity:', str(hour['humidity'])+ '% ')
+    #            print('Precipitation:', str(hour['precip_in']) + 'in')
+    #            print('Wind:', str(hour['wind_mph'])+ 'mph', hour['wind_dir'])
+    #            print('UV Index:', hour['uv'])
+    #            print('\n')
 
-    print('============')
 
+        package1 = (place, temp, condition, wind, humidity, precip, uv, image_url, localtime)
+        print('============')
+    except KeyError:
+        print("Location not recognized")
+        package1 = (-1,-1,-1,-1,-1,-1,-1,-1,-1)
 
-    return place, temp, condition, wind, humidity, precip, uv, image_url, localtime
+    
+
+    return package1
     #pass
 
 
@@ -101,21 +105,15 @@ def getWeather(location):
 location = "Los Angeles"
 
 #while(location != "q"):
-try:
-    getWeather(location)
-except KeyError:
-    print("Sorry, I couldn't find the weather for that location. Please try again.")
+
 #location = input("Where would you like to know the weather? (type 'q' to quit):")
 
 
 
 app = Flask(__name__)
-basedir = os.path.abspath(os.path.dirname(__file__))
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'weather.db')
 app.secret_key = os.urandom(24).hex()
 
 
-db = SQLAlchemy(app)
 
 @app.route('/', methods=['GET','POST'])
 def index():
@@ -125,16 +123,19 @@ def index():
             print("No location provided")
             flash("Please enter a location")
             return render_template('index.html')
-        print(f"Received location: {location}")
-        return redirect(f'/weather/{location}')
+        print('Received location: '+location)
+        return redirect('/weather/'+location)
     return render_template('index.html')
 #https://www.youtube.com/watch?v=hHkl7bKZOCI
 
 
 @app.route('/weather/<location>')
 def weather(location):
-    place, temp, condition, wind, humidity, precip, uv, image_url, localtime =getWeather(location)
-
+    weatherdata=getWeather(location)
+    if weatherdata[0] == -1:
+        flash("Location not recognized. Please try again.")
+        return redirect('/')
+    place, temp, condition, wind, humidity, precip, uv, image_url, localtime = weatherdata
     return render_template('weather.html', location=escape(location), place=place, temp=temp, condition=condition, wind=wind, humidity=humidity, precip=precip, uv=uv, image_url=image_url, localtime=localtime)
 
 if __name__ == '__main__':
