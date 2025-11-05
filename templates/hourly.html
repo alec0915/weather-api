@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather Forecast for: {{ place }}</title>
+</head>
+<body>
+    
+    
+    <form method="POST">
+        <label for="location">Location:</label>
+        <input type="text" id="location" name="location"><br><br>
+        <button type="submit" name="action" value="Current">Get Current Weather</button>
+        <button type="submit" name="action" value="Forecast">Get 3-Day Forecast</button>
+        <button type="submit" name="action" value="Hourly">Get Hourly Forecast</button>
+    </form>
+    
+    
+    <!-- Weather data will be displayed here -->
+
+    <h1>Hourly Forecast for {{ place }}</h1>
+    <table>
+        <tr>
+            <th></th>
+            <th>Time</th>
+            <th>Temperature</th>
+            <th>Feels Like</th>
+            <th>Windchill</th>
+            <th>Condition</th>
+            <th>Cloud Coverage</th>
+            <th>Humidity</th>
+            <th>Precipitation</th>
+            <th>Wind</th>
+            <th>UV Index</th>
+        </tr>
+     {% for item in hourly_data %}
+            <tr>
+                <td><img src="{{ item[5] }}" alt="Weather Icon"></td>
+                <td>{{ item[0] }}</td>
+                <td>{{ item[1] }} °F</td>
+                <td>{{ item[2] }} °F</td>
+                <td>{{ item[3] }} °F</td>
+                <td>{{ item[4] }}</td>
+                <td>{{ item[6] }}%</td>
+                <td>{{ item[7] }}%</td>
+                <td>{{ item[8] }} in</td>
+                <td>{{ item[9] }}</td>
+                <td>{{ item[10] }}</td>
+                
+            </tr>
+    {% endfor %}
+    </table>
+
+</body>
+</html>
+
+

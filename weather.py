@@ -127,6 +127,8 @@ def index():
             return render_template('index.html')
         if request.form.get('action') == 'Forecast':
             return redirect('/forecast/'+location)
+        elif request.form.get('action') == 'Hourly':
+            return redirect('/hourly/'+location)
         else:
             #print("Location submitted:", location)
             return redirect('/weather/'+location)
@@ -134,8 +136,22 @@ def index():
 #https://www.youtube.com/watch?v=hHkl7bKZOCI
 
 
-@app.route('/weather/<location>')
+@app.route('/weather/<location>', methods=['GET','POST'])
 def weather(location):
+    if request.method == 'POST':
+        newLocation = request.form.get('location')
+        if newLocation != '':
+            location = newLocation
+        print("New location submitted:", newLocation)
+        if request.form.get('action') == 'Forecast':
+            return redirect('/forecast/'+location)
+        elif request.form.get('action') == 'Current':
+            return redirect('/weather/'+location)
+        elif request.form.get('action') == 'Hourly':
+            return redirect('/hourly/'+location)
+        else:
+            #print("Location submitted:", location)
+            return redirect('/weather/'+location)
     weatherdata=getWeather(location)
     if weatherdata[0] == -1:
         flash("Location not recognized. Please try again.")
@@ -144,8 +160,22 @@ def weather(location):
     return render_template('weather.html', location=escape(location), place=place, temp=temp, condition=condition, wind=wind, humidity=humidity, precip=precip, uv=uv, image_url=image_url, localtime=localtime)
 
 
-@app.route('/forecast/<location>')
+@app.route('/forecast/<location>', methods=['GET','POST'])
 def forecast(location):
+    if request.method == 'POST':
+        newLocation = request.form.get('location')
+        if newLocation != '':
+            location = newLocation
+        print("New location submitted:", newLocation)
+        if request.form.get('action') == 'Forecast':
+            return redirect('/forecast/'+location)
+        elif request.form.get('action') == 'Current':
+            return redirect('/weather/'+location)
+        elif request.form.get('action') == 'Hourly':
+            return redirect('/hourly/'+location)
+        else:
+            #print("Location submitted:", location)
+            return redirect('/weather/'+location)
     weatherdata=getForecast3Day(location)
     if weatherdata[0] == -1:
         flash("Location not recognized. Please try again.")
@@ -160,6 +190,31 @@ def forecast(location):
 # add button to go back to index.html
 # add in page and buttons for hourly forecast
 
+
+@app.route('/hourly/<location>', methods=['GET','POST'])
+def hourly(location):
+    if request.method == 'POST':
+        newLocation = request.form.get('location')
+        if newLocation != '':
+            location = newLocation
+        print("New location submitted:", newLocation)
+        if request.form.get('action') == 'Forecast':
+            return redirect('/forecast/'+location)
+        elif request.form.get('action') == 'Current':
+            return redirect('/weather/'+location)
+        elif request.form.get('action') == 'Hourly':
+            return redirect('/hourly/'+location)
+        else:
+            #print("Location submitted:", location)
+            return redirect('/weather/'+location)
+    weatherdata=getHourlyForecast(location)
+    if weatherdata[0] == -1:
+        flash("Location not recognized. Please try again.")
+        return redirect('/')
+    hourly = getHourlyForecast(location)
+    place = hourly[0]
+    hourly_data = hourly[1:]
+    return render_template('hourly.html', location=escape(location), place=place, hourly_data=hourly_data)
 
 if __name__ == '__main__':
     getHourlyForecast("Los Angeles")

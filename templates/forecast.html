@@ -6,6 +6,14 @@
     <title>Weather Forecast for: {{ place }}</title>
 </head>
 <body>
+    <form method="POST">
+    <label for="location">Location:</label>
+    <input type="text" id="location" name="location"><br><br>
+    <button type="submit" name="action" value="Current">Get Current Weather</button>
+    <button type="submit" name="action" value="Forecast">Get 3-Day Forecast</button>
+    <button type="submit" name="action" value="Hourly">Get Hourly Forecast</button>
+    </form>
+    
     <h1>3-Day Forecast for {{ place }}</h1>
     <!-- Weather data will be displayed here -->
 
