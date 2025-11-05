@@ -7,14 +7,16 @@
     <style>
         body{
             background-image: linear-gradient(to right, #6ccbfa, #ffffff);
-            color:#000000 ;}
-            button {
+            color:#000000 ;
+        }
+        button {
             background-color: #ffffff;
             color: #000000;
             padding: 10px 20px;
             border: none;
             border-radius: 15px;
             cursor: pointer;
+            
         }
         button:hover {
             background-color: #ceecff;
@@ -31,6 +33,7 @@
             width: 402px;
             margin-top: 20px;
         }
+        
     </style>
 </head>
 <body>
@@ -41,20 +44,58 @@
     <button type="submit" name="action" value="Current">Get Current Weather</button>
     <button type="submit" name="action" value="Forecast">Get 3-Day Forecast</button>
     <button type="submit" name="action" value="Hourly">Get Hourly Forecast</button>
+    <button type="submit" name="action" value="Home">Return Home</button>
     </form>
     
     <h1>{{ place }}</h1>
-    <h2>Local Time: {{ localtime }}</h2>
+    <h3>Local Time: {{ current_data[8] }}</h2>
 
     <!-- Weather data will be displayed here -->
-    <img src="{{ image_url }}" alt="Weather Icon">
-    <p>Temperature: {{ temp }} °F</p>
-    <p>Condition: {{ condition }} </p>
-    <p>Wind: {{ wind }}</p>
-    <p>Humidity: {{ humidity }}%</p>
-    <p>Precipitation: {{ precip }} in</p>
-    <p>UV Index: {{ uv }}</p>
-    
+
+    <table>
+        <tr>
+            <td><img src="{{ current_data[7] }}" alt="Weather Icon"></td>
+        </tr>
+        <tr>
+            <td>Temperature: {{ current_data[0] }} °F</td>
+        </tr>  
+        <tr>
+            <td>High: {{ current_data[9] }} °F</td>
+        </tr>
+        <tr>
+            <td>Low: {{ current_data[10] }} °F</td>
+        </tr>
+        <tr>
+            <td>Wind: {{ current_data[2] }}</td>
+        </tr>
+        <tr>
+            <td>Humidity: {{ current_data[3] }}%</td>
+        </tr>
+        <tr>
+            <td>Chance of Rain: {{ current_data[4] }}%</td>
+        </tr>
+        <tr>
+            <td>Precipitation: {{ current_data[5] }} in</td>
+        </tr>
+        <tr>
+            <td>UV Index: {{ current_data[6] }}</td>    
+        </tr>
+        <tr>
+            <td>Sunrise: {{ current_data[11] }}</td>
+        </tr>
+        <tr>
+            <td>Sunset: {{ current_data[12] }}</td>
+        </tr>
+        <tr>
+            <td>Moonrise: {{ current_data[13] }}</td>
+        </tr>
+        <tr>
+            <td>Moonset: {{ current_data[14] }}</td>
+        </tr>
+        <tr>
+            <td>Moon Phase: {{ current_data[15] }}</td>
+        </tr>
+    </table>
 
 </body>
 </html>

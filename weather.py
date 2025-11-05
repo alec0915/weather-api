@@ -29,6 +29,7 @@ def getWeather(location):
     weatherData = response.json()
 
     try:
+        current = []
         place = weatherData['location']['name'] + ', ' + weatherData['location']['region'] + ', ' + weatherData['location']['country']
         temp = weatherData['current']['temp_f']
         condition = weatherData['current']['condition']['text']
@@ -38,24 +39,41 @@ def getWeather(location):
         uv = weatherData['current']['uv']
         image_url = "http:" + weatherData['current']['condition']['icon']
         localtime = weatherData['location']['localtime']
-        package1 = (place, temp, condition, wind, humidity, precip, uv, image_url, localtime)
+        #package1 = (place, temp, condition, wind, humidity, precip, uv, image_url, localtime)
 
         max_temp = weatherData['forecast']['forecastday'][0]['day']['maxtemp_f']
         min_temp = weatherData['forecast']['forecastday'][0]['day']['mintemp_f']
         willItRain = weatherData['forecast']['forecastday'][0]['day']['daily_chance_of_rain']
-        uv = weatherData['forecast']['forecastday'][0]['day']['uv']
         sunrise = weatherData['forecast']['forecastday'][0]['astro']['sunrise']
         sunset = weatherData['forecast']['forecastday'][0]['astro']['sunset']
         moonrise = weatherData['forecast']['forecastday'][0]['astro']['moonrise']
         moonset = weatherData['forecast']['forecastday'][0]['astro']['moonset']
         moon_phase = weatherData['forecast']['forecastday'][0]['astro']['moon_phase']
-
-
+        is_day = weatherData['current']['is_day']
+        current.append(place)
+        current.append(temp)
+        current.append(condition)
+        current.append(wind)
+        current.append(humidity)
+        current.append(willItRain)
+        current.append(precip)
+        current.append(uv)
+        current.append(image_url)
+        current.append(localtime)
+        current.append(max_temp)
+        current.append(min_temp)
+        current.append(sunrise)
+        current.append(sunset)
+        current.append(moonrise)
+        current.append(moonset)
+        current.append(moon_phase)
+        current.append(is_day)
+        
     except KeyError:
         print("Location not recognized")
-        package1 = (-1,-1,-1,-1,-1,-1,-1,-1,-1)
+        current = (-1,-1,-1,-1,-1,-1,-1,-1,-1)
 
-    return package1
+    return current
 
 def getForecast3Day(location):
     url = "http://api.weatherapi.com/v1/forecast.json?key="+str(KEY)+"&q="+location+"&days=3&aqi=yes&alerts=no"
@@ -80,7 +98,7 @@ def getForecast3Day(location):
             moonset = day['astro']['moonset']
             moon_phase = day['astro']['moon_phase']
             image_url = "http:" + day['day']['condition']['icon']
-            package1 = [max_temp, min_temp, condition, humidity, willItRain, precip, uv, sunrise, sunset, moonrise, moonset, moon_phase,image_url]
+            package1 = [max_temp, min_temp, condition, humidity, willItRain, precip, uv, sunrise, sunset, moonrise, moonset, moon_phase,image_url, day['date']]
             days.append(package1)
 
     except KeyError:
@@ -120,7 +138,64 @@ def getHourlyForecast(location):
 
     return hourly
 
+def getHourlyForecastFromNow(location):
 
+    url = "http://api.weatherapi.com/v1/forecast.json?key="+str(KEY)+"&q="+location+"&days=3&aqi=yes&alerts=no"
+    response = requests.get(url)
+    weatherData = response.json()
+
+    try:
+        hourly = []
+        place = weatherData['location']['name'] + ', ' + weatherData['location']['region'] + ', ' + weatherData['location']['country']
+        hourly.append(place)
+        day = weatherData['forecast']['forecastday'][0]
+        localtime = weatherData['location']['localtime']
+        currentHour = int(localtime.split(' ')[1].split(':')[0])
+
+        print("Current Hour:", currentHour)
+        #print(day['hour'][currentHour])
+
+        for hour in day['hour'][currentHour:]:
+            #print(hour)
+            time = hour['time']
+            temp = hour['temp_f']
+            feelslike = hour['feelslike_f']
+            windchill = hour['windchill_f']
+            condition = hour['condition']['text']
+            image_url = "http:" + hour['condition']['icon']
+            clouds = hour['cloud']
+            humidity = hour['humidity']
+            precip = hour['precip_in']
+            wind = str(hour['wind_mph'])+ 'mph ' + hour['wind_dir']
+            uv = hour['uv']
+            package1 = [time, temp, feelslike, windchill,condition, image_url, clouds, humidity, precip, wind, uv]
+            hourly.append(package1)
+
+        if len(hourly) < 25:
+            day2 = weatherData['forecast']['forecastday'][1]
+            for hour in day2['hour']:
+                time = hour['time']
+                temp = hour['temp_f']
+                feelslike = hour['feelslike_f']
+                windchill = hour['windchill_f']
+                condition = hour['condition']['text']
+                image_url = "http:" + hour['condition']['icon']
+                clouds = hour['cloud']
+                humidity = hour['humidity']
+                precip = hour['precip_in']
+                wind = str(hour['wind_mph'])+ 'mph ' + hour['wind_dir']
+                uv = hour['uv']
+                package1 = [time, temp, feelslike, windchill,condition, image_url, clouds, humidity, precip, wind, uv]
+                hourly.append(package1)
+                if len(hourly) >= 25:
+                    break
+        
+        hourly.append(weatherData['current']['is_day'])
+    except KeyError:
+        print("Location not recognized")
+        hourly = [-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1]
+
+    return hourly
 
 
 app = Flask(__name__)
@@ -160,6 +235,8 @@ def weather(location):
             return redirect('/weather/'+location)
         elif request.form.get('action') == 'Hourly':
             return redirect('/hourly/'+location)
+        elif request.form.get('action') == 'Home':
+            return redirect('/')
         else:
             #print("Location submitted:", location)
             return redirect('/weather/'+location)
@@ -168,8 +245,12 @@ def weather(location):
     if weatherdata[0] == -1:
         flash("Location not recognized. Please try again.")
         return redirect('/')
-    place, temp, condition, wind, humidity, precip, uv, image_url, localtime = weatherdata
-    return render_template('weather.html', location=escape(location), place=place, temp=temp, condition=condition, wind=wind, humidity=humidity, precip=precip, uv=uv, image_url=image_url, localtime=localtime)
+    #place, temp, condition, wind, humidity, precip, uv, image_url, localtime = weatherdata
+    place = weatherdata[0]
+    is_day = weatherdata[-1]
+    current_data = weatherdata[1:-1]
+
+    return render_template('weather.html', location=escape(location), place=place, current_data=current_data, is_day=is_day)
 
 
 @app.route('/forecast/<location>', methods=['GET','POST'])
@@ -185,6 +266,8 @@ def forecast(location):
             return redirect('/weather/'+location)
         elif request.form.get('action') == 'Hourly':
             return redirect('/hourly/'+location)
+        elif request.form.get('action') == 'Home':
+            return redirect('/')
         else:
             #print("Location submitted:", location)
             return redirect('/weather/'+location)
@@ -195,13 +278,9 @@ def forecast(location):
         return redirect('/')
     days = getForecast3Day(location)
     place = days[0]
-    max_temp_Day_1, min_temp_Day_1, condition_Day_1, humidity_Day_1, will_It_Rain_Day_1, precip_Day_1, uv_Day_1, sunrise_Day_1, sunset_Day_1, moonrise_Day_1, moonset_Day_1, moon_phase_Day_1, image_url_Day_1 = days[1]
-    max_temp_Day_2, min_temp_Day_2, condition_Day_2, humidity_Day_2, will_It_Rain_Day_2, precip_Day_2, uv_Day_2, sunrise_Day_2, sunset_Day_2, moonrise_Day_2, moonset_Day_2, moon_phase_Day_2, image_url_Day_2 = days[2]
-    max_temp_Day_3, min_temp_Day_3, condition_Day_3, humidity_Day_3, will_It_Rain_Day_3, precip_Day_3, uv_Day_3, sunrise_Day_3, sunset_Day_3, moonrise_Day_3, moonset_Day_3, moon_phase_Day_3, image_url_Day_3 = days[3]
 
-    return render_template('forecast.html', location=escape(location), will_It_Rain_Day_1=will_It_Rain_Day_1,will_It_Rain_Day_2=will_It_Rain_Day_2,will_It_Rain_Day_3=will_It_Rain_Day_3, place=place, max_temp_Day_1=max_temp_Day_1, min_temp_Day_1=min_temp_Day_1, condition_Day_1=condition_Day_1, humidity_Day_1=humidity_Day_1, precip_Day_1=precip_Day_1, uv_Day_1=uv_Day_1, sunrise_Day_1=sunrise_Day_1, sunset_Day_1=sunset_Day_1, moonrise_Day_1=moonrise_Day_1, moonset_Day_1=moonset_Day_1, moon_phase_Day_1=moon_phase_Day_1, image_url_Day_1=image_url_Day_1, max_temp_Day_2=max_temp_Day_2, min_temp_Day_2=min_temp_Day_2, condition_Day_2=condition_Day_2, humidity_Day_2=humidity_Day_2, precip_Day_2=precip_Day_2, uv_Day_2=uv_Day_2, sunrise_Day_2=sunrise_Day_2, sunset_Day_2=sunset_Day_2, moonrise_Day_2=moonrise_Day_2, moonset_Day_2=moonset_Day_2, moon_phase_Day_2=moon_phase_Day_2, image_url_Day_2=image_url_Day_2, max_temp_Day_3=max_temp_Day_3, min_temp_Day_3=min_temp_Day_3, condition_Day_3=condition_Day_3, humidity_Day_3=humidity_Day_3, precip_Day_3=precip_Day_3, uv_Day_3=uv_Day_3, sunrise_Day_3=sunrise_Day_3, sunset_Day_3=sunset_Day_3, moonrise_Day_3=moonrise_Day_3, moonset_Day_3=moonset_Day_3, moon_phase_Day_3=moon_phase_Day_3, image_url_Day_3=image_url_Day_3)
+    return render_template('forecast.html', location=escape(location), place=place, day1=days[1], day2=days[2], day3=days[3])
 # add button to go back to index.html
-# add in page and buttons for hourly forecast
 
 
 @app.route('/hourly/<location>', methods=['GET','POST'])
@@ -217,15 +296,17 @@ def hourly(location):
             return redirect('/weather/'+location)
         elif request.form.get('action') == 'Hourly':
             return redirect('/hourly/'+location)
+        elif request.form.get('action') == 'Home':
+            return redirect('/')
         else:
             #print("Location submitted:", location)
             return redirect('/weather/'+location)
         
-    weatherdata=getHourlyForecast(location)
+    weatherdata=getHourlyForecastFromNow(location)
     if weatherdata[0] == -1:
         flash("Location not recognized. Please try again.")
         return redirect('/')
-    hourly = getHourlyForecast(location)
+    hourly = getHourlyForecastFromNow(location)
     place = hourly[0]
     hourly_data = hourly[1:-1]
     is_day = hourly[-1]
