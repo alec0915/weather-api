@@ -24,7 +24,7 @@ KEY = os.getenv("KEY")
 
 
 def getWeather(location):
-    url = "http://api.weatherapi.com/v1/current.json?key="+str(KEY)+"&q="+location
+    url = "http://api.weatherapi.com/v1/forecast.json?key="+str(KEY)+"&q="+location+"&days=3&aqi=yes&alerts=no"
     response = requests.get(url)
     weatherData = response.json()
 
@@ -39,6 +39,17 @@ def getWeather(location):
         image_url = "http:" + weatherData['current']['condition']['icon']
         localtime = weatherData['location']['localtime']
         package1 = (place, temp, condition, wind, humidity, precip, uv, image_url, localtime)
+
+        max_temp = weatherData['forecast']['forecastday'][0]['day']['maxtemp_f']
+        min_temp = weatherData['forecast']['forecastday'][0]['day']['mintemp_f']
+        willItRain = weatherData['forecast']['forecastday'][0]['day']['daily_chance_of_rain']
+        uv = weatherData['forecast']['forecastday'][0]['day']['uv']
+        sunrise = weatherData['forecast']['forecastday'][0]['astro']['sunrise']
+        sunset = weatherData['forecast']['forecastday'][0]['astro']['sunset']
+        moonrise = weatherData['forecast']['forecastday'][0]['astro']['moonrise']
+        moonset = weatherData['forecast']['forecastday'][0]['astro']['moonset']
+        moon_phase = weatherData['forecast']['forecastday'][0]['astro']['moon_phase']
+
 
     except KeyError:
         print("Location not recognized")
@@ -102,7 +113,7 @@ def getHourlyForecast(location):
             uv = hour['uv']
             package1 = [time, temp, feelslike, windchill,condition, image_url, clouds, humidity, precip, wind, uv]
             hourly.append(package1)
-
+        hourly.append(weatherData['current']['is_day'])
     except KeyError:
         print("Location not recognized")
         hourly = [-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1]
@@ -152,6 +163,7 @@ def weather(location):
         else:
             #print("Location submitted:", location)
             return redirect('/weather/'+location)
+    
     weatherdata=getWeather(location)
     if weatherdata[0] == -1:
         flash("Location not recognized. Please try again.")
@@ -176,6 +188,7 @@ def forecast(location):
         else:
             #print("Location submitted:", location)
             return redirect('/weather/'+location)
+    
     weatherdata=getForecast3Day(location)
     if weatherdata[0] == -1:
         flash("Location not recognized. Please try again.")
@@ -207,14 +220,16 @@ def hourly(location):
         else:
             #print("Location submitted:", location)
             return redirect('/weather/'+location)
+        
     weatherdata=getHourlyForecast(location)
     if weatherdata[0] == -1:
         flash("Location not recognized. Please try again.")
         return redirect('/')
     hourly = getHourlyForecast(location)
     place = hourly[0]
-    hourly_data = hourly[1:]
-    return render_template('hourly.html', location=escape(location), place=place, hourly_data=hourly_data)
+    hourly_data = hourly[1:-1]
+    is_day = hourly[-1]
+    return render_template('hourly.html', location=escape(location), place=place, hourly_data=hourly_data, is_day=is_day)
 
 if __name__ == '__main__':
     app.run(debug=True)
