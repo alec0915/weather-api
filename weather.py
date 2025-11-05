@@ -217,5 +217,4 @@ def hourly(location):
     return render_template('hourly.html', location=escape(location), place=place, hourly_data=hourly_data)
 
 if __name__ == '__main__':
-    getHourlyForecast("Los Angeles")
     app.run(debug=True)
