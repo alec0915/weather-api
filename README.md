@@ -1,8 +1,4 @@
-# I want to try and remember how APIs work!
-
-gonna try and make a simple weather program
-not sure how deep I'll delve into it, but I want to get something running
-
+# Weather by Alec Whyte
 
 This project has evolved beyond what I thought I could make
 It actually works? Like that's crazy to me. I didn't think I could do this.
